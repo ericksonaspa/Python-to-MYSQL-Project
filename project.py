@@ -18,10 +18,12 @@ def main():
             ip = input("Enter your IPv4 Address (CIDR format): ")
             print(f"The network address is {get_netID(ip)}.\nThe broadcast address is {get_broadcastID(ip)}.\nTotal number of hosts is {get_numhosts(ip)}.\nIt's {ip_class(ip)}.\nAlso, it's a {public_or_private(ip)}.")
 
-            con = mysql.connector.connect(host='localhost', database='subnetdb', user='awsuser', password='awspassword')
-            query = "INSERT INTO subnet_table (NETWORK ID, BROADCAST ID, NUMBER OF HOSTS, CLASS, PUBLIC/PRIVATE) VALUES ('" + get_netID(ip) + "', '" + get_broadcastID(ip) + "', '" + get_numhosts(ip) + "', '" + ip_class(ip) + "', '" + public_or_private(ip) + "')"
+            con = mysql.connector.connect(host='subnetdb.cgyhe7v3wbbj.us-east-1.rds.amazonaws.com', database='subnetdb', user='awsuser', password='awspassword')
+            query = "CREATE TABLE subnet_table (NETWORK_ID VARCHAR(18) NOT NULL, BROADCAST_ID VARCHAR(18) NOT NULL, NUMBER_OF_HOSTS INT NOT NULL, CLASS VARCHAR(7) NOT NULL, PUBLIC_or_PRIVATE VARCHAR(10) NOT NULL)"
+            query2 = "INSERT INTO subnet_table (NETWORK_ID, BROADCAST_ID, NUMBER_OF_HOSTS, CLASS, PUBLIC_or_PRIVATE) VALUES ('" + get_netID(ip) + "', '" + get_broadcastID(ip) + "', '" + str(get_numhosts(ip)) + "', '" + ip_class(ip) + "', '" + public_or_private(ip) + "')"
             cur = con.cursor()
             cur.execute(query)
+            cur.execute(query2)
             con.commit()
             cur.close()
 
