@@ -18,7 +18,7 @@ def main():
             ip = input("Enter your IPv4 Address (CIDR format): ")
             print(f"The network address is {get_netID(ip)}.\nThe broadcast address is {get_broadcastID(ip)}.\nTotal number of hosts is {get_numhosts(ip)}.\nIt's {ip_class(ip)}.\nAlso, it's a {public_or_private(ip)}.")
 
-            con = mysql.connector.connect(host='localhost', database='db_subnettable', user='awsuser', password='awspassword')
+            con = mysql.connector.connect(host='localhost', database='subnetdb', user='awsuser', password='awspassword')
             query = "INSERT INTO subnet_table (NETWORK ID, BROADCAST ID, NUMBER OF HOSTS, CLASS, PUBLIC/PRIVATE) VALUES ('" + get_netID(ip) + "', '" + get_broadcastID(ip) + "', '" + get_numhosts(ip) + "', '" + ip_class(ip) + "', '" + public_or_private(ip) + "')"
             cur = con.cursor()
             cur.execute(query)
