@@ -1,0 +1,11 @@
+sudo su
+yum update
+yum install git
+git clone https://github.com/ericksonaspa/Python-to-MYSQL-Project.git
+yum install python3-pip
+pip3 install tabulate
+pip3 install pyfiglet
+pip install mysql-connector-python
+sudo dnf update -y
+sudo dnf install mariadb105
+mysql -h subnetdb.cgyhe7v3wbbj.us-east-1.rds.amazonaws.com -P 3306 -u awsuser -p
