@@ -22,8 +22,7 @@ def main():
             query = "CREATE TABLE subnet_table (NETWORK_ID VARCHAR(18) NOT NULL, BROADCAST_ID VARCHAR(18) NOT NULL, NUMBER_OF_HOSTS INT NOT NULL, CLASS VARCHAR(7) NOT NULL, PUBLIC_or_PRIVATE VARCHAR(10) NOT NULL)"
             query2 = "INSERT INTO subnet_table (NETWORK_ID, BROADCAST_ID, NUMBER_OF_HOSTS, CLASS, PUBLIC_or_PRIVATE) VALUES ('" + get_netID(ip) + "', '" + get_broadcastID(ip) + "', '" + str(get_numhosts(ip)) + "', '" + ip_class(ip) + "', '" + public_or_private(ip) + "')"
             cur = con.cursor()
-            cur.execute(query)
-            cur.execute(query2)
+            cur.execute(query, query2)
             con.commit()
             cur.close()
 
