@@ -35,11 +35,10 @@ def main():
             token = client.generate_db_auth_token(DBHostname=ENDPOINT, Port=PORT, DBUsername=USER, Region=REGION)
 
             try:
-                conn =  pymysql.connect(host=ENDPOINT, user=USER, passwd=token, port=PORT, database=DBNAME, ssl_ca='SSLCERTIFICATE')
+                conn =  pymysql.connect(host=ENDPOINT, user=USER, passwd=token, port=PORT, database=DBNAME)
                 cur = conn.cursor()
-                create_table = "CREATE TABLE dbsubnet_table (NETWORK_ID VARCHAR(18) NOT NULL, BROADCAST_ID VARCHAR(18) NOT NULL, NUMBER_OF_HOSTS INT NOT NULL, CLASS VARCHAR(7) NOT NULL, PUBLIC_or_PRIVATE VARCHAR(10) NOT NULL)"
-                insert_data = "INSERT INTO subnet_table (NETWORK ID, BROADCAST ID, NUMBER OF HOSTS, CLASS, PUBLIC/PRIVATE) VALUES ('" + get_netID(ip) + "', '" + get_broadcastID(ip) + "', '" + str(get_numhosts(ip)) + "', '" + ip_class(ip) + "', '" + public_or_private(ip) + "')"
-                cur.execute(create_table, insert_data)
+                insert_data = "INSERT INTO subnet_table (NETWORK_ID, BROADCAST_ID, NUMBER_OF_HOSTS, CLASS, PUBLIC_or_PRIVATE) VALUES ('" + get_netID(ip) + "', '" + get_broadcastID(ip) + "', '" + str(get_numhosts(ip)) + "', '" + ip_class(ip) + "', '" + public_or_private(ip) + "')"
+                cur.execute(insert_data)
                 query_results = cur.fetchall()
                 print(query_results)
             except Exception as e:
