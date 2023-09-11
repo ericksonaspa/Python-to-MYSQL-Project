@@ -4,7 +4,10 @@ import pyfiglet
 import sys
 import csv
 import re
-import mysql.connector
+import pymysql
+import sys
+import boto3
+import os
 
 def main():
     try:
@@ -18,12 +21,28 @@ def main():
             ip = input("Enter your IPv4 Address (CIDR format): ")
             print(f"The network address is {get_netID(ip)}.\nThe broadcast address is {get_broadcastID(ip)}.\nTotal number of hosts is {get_numhosts(ip)}.\nIt's {ip_class(ip)}.\nAlso, it's a {public_or_private(ip)}.")
 
-            con = mysql.connector.connect(host='******************************', database='dbsubnet', user='awsuser', password='**************')
-            query = "INSERT INTO dbsubnet_table (NETWORK_ID, BROADCAST_ID, NUMBER_OF_HOSTS, CLASS, PUBLIC_or_PRIVATE)" "VALUES ('" + get_netID(ip) + "', '" + get_broadcastID(ip) + "', '" + str(get_numhosts(ip)) + "', '" + ip_class(ip) + "', '" + public_or_private(ip) + "')"
-            cur = con.cursor()
-            cur.execute(query)
-            con.commit()
-            cur.close()
+            ENDPOINT="1.cgyhe7v3wbbj.us-east-1.rds.amazonaws.com"
+            PORT="3306"
+            USER="admin"
+            REGION="us-east-1"
+            DBNAME="dbsubnet"
+            os.environ['LIBMYSQL_ENABLE_CLEARTEXT_PLUGIN'] = '1'
+
+            #gets the credentials from .aws/credentials
+            session = boto3.Session(profile_name='default')
+            client = session.client('rds')
+
+            token = client.generate_db_auth_token(DBHostname=ENDPOINT, Port=PORT, DBUsername=USER, Region=REGION)
+
+            try:
+                conn =  pymysql.connect(host=ENDPOINT, user=USER, passwd=token, port=PORT, database=DBNAME, ssl_ca='SSLCERTIFICATE')
+                cur = conn.cursor()
+                cur.execute("""CREATE TABLE dbsubnet_table (NETWORK_ID VARCHAR(18) NOT NULL, BROADCAST_ID VARCHAR(18) NOT NULL, NUMBER_OF_HOSTS INT NOT NULL, CLASS VARCHAR(7) NOT NULL, PUBLIC_or_PRIVATE VARCHAR(10) NOT NULL)""")
+                cur.execute("""INSERT INTO dbsubnet_table (NETWORK_ID, BROADCAST_ID, NUMBER_OF_HOSTS, CLASS, PUBLIC_or_PRIVATE) VALUES ('" + get_netID(ip) + "', '" + get_broadcastID(ip) + "', '" + str(get_numhosts(ip)) + "', '" + ip_class(ip) + "', '" + public_or_private(ip) + "')""")
+                query_results = cur.fetchall()
+                print(query_results)
+            except Exception as e:
+                print("Database connection failed due to {}".format(e))
 
             with open('project.csv', "r", newline='') as file:
                 reader = csv.DictReader(file)
