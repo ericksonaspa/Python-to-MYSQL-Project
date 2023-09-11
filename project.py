@@ -37,7 +37,7 @@ def main():
             try:
                 conn =  pymysql.connect(host=ENDPOINT, user=USER, passwd=token, port=PORT, database=DBNAME)
                 cur = conn.cursor()
-                insert_data = "INSERT INTO subnet_table (NETWORK_ID, BROADCAST_ID, NUMBER_OF_HOSTS, CLASS, PUBLIC_or_PRIVATE) VALUES ('" + get_netID(ip) + "', '" + get_broadcastID(ip) + "', '" + str(get_numhosts(ip)) + "', '" + ip_class(ip) + "', '" + public_or_private(ip) + "')"
+                insert_data = "INSERT INTO dbsubnet_table (NETWORK_ID, BROADCAST_ID, NUMBER_OF_HOSTS, CLASS, PUBLIC_or_PRIVATE) VALUES ('" + get_netID(ip) + "', '" + get_broadcastID(ip) + "', '" + str(get_numhosts(ip)) + "', '" + ip_class(ip) + "', '" + public_or_private(ip) + "')"
                 cur.execute(insert_data)
                 query_results = cur.fetchall()
                 print(query_results)
