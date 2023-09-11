@@ -37,8 +37,9 @@ def main():
             try:
                 conn =  pymysql.connect(host=ENDPOINT, user=USER, passwd=token, port=PORT, database=DBNAME, ssl_ca='SSLCERTIFICATE')
                 cur = conn.cursor()
-                cur.execute("""CREATE TABLE dbsubnet_table (NETWORK_ID VARCHAR(18) NOT NULL, BROADCAST_ID VARCHAR(18) NOT NULL, NUMBER_OF_HOSTS INT NOT NULL, CLASS VARCHAR(7) NOT NULL, PUBLIC_or_PRIVATE VARCHAR(10) NOT NULL)""")
-                cur.execute("""INSERT INTO dbsubnet_table (NETWORK_ID, BROADCAST_ID, NUMBER_OF_HOSTS, CLASS, PUBLIC_or_PRIVATE) VALUES ('" + get_netID(ip) + "', '" + get_broadcastID(ip) + "', '" + str(get_numhosts(ip)) + "', '" + ip_class(ip) + "', '" + public_or_private(ip) + "')""")
+                create_table = "CREATE TABLE dbsubnet_table (NETWORK_ID VARCHAR(18) NOT NULL, BROADCAST_ID VARCHAR(18) NOT NULL, NUMBER_OF_HOSTS INT NOT NULL, CLASS VARCHAR(7) NOT NULL, PUBLIC_or_PRIVATE VARCHAR(10) NOT NULL)"
+                insert_data = "INSERT INTO subnet_table (NETWORK ID, BROADCAST ID, NUMBER OF HOSTS, CLASS, PUBLIC/PRIVATE) VALUES ('" + get_netID(ip) + "', '" + get_broadcastID(ip) + "', '" + str(get_numhosts(ip)) + "', '" + ip_class(ip) + "', '" + public_or_private(ip) + "')"
+                cur.execute(create_table, insert_data)
                 query_results = cur.fetchall()
                 print(query_results)
             except Exception as e:
