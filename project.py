@@ -21,7 +21,7 @@ def main():
             ip = input("Enter your IPv4 Address (CIDR format): ")
             print(f"The network address is {get_netID(ip)}.\nThe broadcast address is {get_broadcastID(ip)}.\nTotal number of hosts is {get_numhosts(ip)}.\nIt's {ip_class(ip)}.\nAlso, it's a {public_or_private(ip)}.")
 
-            ENDPOINT="1.cgyhe7v3wbbj.us-east-1.rds.amazonaws.com"
+            ENDPOINT="database-1.cgyhe7v3wbbj.us-east-1.rds.amazonaws.com"
             PORT="3306"
             USER="admin"
             REGION="us-east-1"
