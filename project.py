@@ -4,10 +4,7 @@ import pyfiglet
 import sys
 import csv
 import re
-import pymysql
-import sys
-import boto3
-import os
+import mysql.connector
 
 def main():
     try:
@@ -21,28 +18,18 @@ def main():
             ip = input("Enter your IPv4 Address (CIDR format): ")
             print(f"The network address is {get_netID(ip)}.\nThe broadcast address is {get_broadcastID(ip)}.\nTotal number of hosts is {get_numhosts(ip)}.\nIt's {ip_class(ip)}.\nAlso, it's a {public_or_private(ip)}.")
 
-            ENDPOINT="database-1.cgyhe7v3wbbj.us-east-1.rds.amazonaws.com"
+            ENDPOINT="test.cgyhe7v3wbbj.us-east-1.rds.amazonaws.com"
             PORT=int(3306)
             USER="admin"
-            REGION="us-east-1"
-            DBNAME="dbsubnet"
-            os.environ['LIBMYSQL_ENABLE_CLEARTEXT_PLUGIN'] = '1'
+            DBNAME="test"
+            PASSWORD="password"
 
-            #gets the credentials from .aws/credentials
-            session = boto3.Session(profile_name='iamadmin-general')
-            client = session.client('rds')
-
-            token = client.generate_db_auth_token(DBHostname=ENDPOINT, Port=PORT, DBUsername=USER, Region=REGION)
-
-            try:
-                conn =  pymysql.connect(host=ENDPOINT, user=USER, passwd=token, port=PORT, database=DBNAME)
-                cur = conn.cursor()
-                insert_data = "INSERT INTO dbsubnet_table (NETWORK_ID, BROADCAST_ID, NUMBER_OF_HOSTS, CLASS, PUBLIC_or_PRIVATE) VALUES ('" + get_netID(ip) + "', '" + get_broadcastID(ip) + "', '" + str(get_numhosts(ip)) + "', '" + ip_class(ip) + "', '" + public_or_private(ip) + "')"
-                cur.execute(insert_data)
-                query_results = cur.fetchall()
-                print(query_results)
-            except Exception as e:
-                print("Database connection failed due to {}".format(e))
+            con = mysql.connector.connect(host=ENDPOINT, database=DBNAME, user=USER, password=PASSWORD)
+            query = "INSERT INTO dbsubnet_table (NETWORK_ID, BROADCAST_ID, NUMBER_OF_HOSTS, CLASS, PUBLIC_or_PRIVATE)" "VALUES ('" + get_netID(ip) + "', '" + get_broadcastID(ip) + "', '" + str(get_numhosts(ip)) + "', '" + ip_class(ip) + "', '" + public_or_private(ip) + "')"
+            cur = con.cursor()
+            cur.execute(query)
+            con.commit()
+            cur.close()
 
             with open('project.csv', "r", newline='') as file:
                 reader = csv.DictReader(file)
